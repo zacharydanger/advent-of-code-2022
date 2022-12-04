@@ -7,18 +7,41 @@
 
 # Find the item type that appears in both compartments of each rucksack. What is the sum of the priorities of those item types?
 
+def priorities
+  pri = 1
+  {}.tap do |priors|
+    ("a".."z").each do |letter|
+      priors[letter] = pri
+      pri += 1
+    end
+
+    ("A".."Z").each do |letter|
+      priors[letter] = pri
+      pri += 1
+    end
+  end
+end
+
+def score(item)
+  priorities[item]
+end
+
 class Ruckus
   attr_reader :raw
 
   def initialize(raw)
-    @raw = raw
+    @raw = raw.strip
+  end
+
+  def items
+    raw.split ''
   end
 
   def compartments
-    middle = raw.size / 2
+    middle = items.size / 2
 
-    c1 = raw.slice(0...middle).split ''
-    c2 = raw.slice(middle...raw.size).split ''
+    c1 = items.slice(0...middle)
+    c2 = items.slice(middle...items.size)
 
     [c1, c2]
   end
@@ -28,28 +51,9 @@ class Ruckus
   end
 
   def common_score
-    priorities[common_item]
+    score common_item
   end
 
-  def priorities
-    @priorities ||= begin
-                      priorities = {}
-
-                      pri = 1
-
-                      ("a".."z").each do |letter|
-                        priorities[letter] = pri
-                        pri += 1
-                      end
-
-                      ("A".."Z").each do |letter|
-                        priorities[letter] = pri
-                        pri += 1
-                      end
-
-                      priorities
-                    end
-  end
 end
 
 def score_file(input_file)
@@ -68,3 +72,23 @@ else
 end
 
 puts "REAL SCORE: #{score_file('./input')}"
+
+def badge_score(input_file)
+  rucks = File.readlines(input_file).map do |line|
+    Ruckus.new(line)
+  end
+
+  wtf = rucks.each_slice(3).map do |a,b,c|
+    score (a.items & b.items & c.items).first
+  end.sum
+end
+
+test_score = badge_score('./test_input2')
+
+if 70 != test_score
+  puts "TEST FAILED: expected 70, got #{test_score.inspect}"
+end
+
+real_badge_score = badge_score('./input2')
+
+puts "REAL BADGE SCORE: #{real_badge_score}"
