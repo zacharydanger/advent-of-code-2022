@@ -1,5 +1,5 @@
 # CRANE!
-class Cargo
+class Crane
   attr_reader :raw_input
 
   def initialize(raw_input)
@@ -67,11 +67,25 @@ class Cargo
   end
 end
 
+class CrateMover9k < Crane
+  def run!
+    while ins = instructions.shift
+      stacks[ins[:dest]] += stacks[ins[:src]].pop(ins[:count])
+    end
+  end
+end
+
 def solve_it(file_name)
-  c = Cargo.new File.read(file_name)
+  c = Crane.new File.read(file_name)
 
   c.run!
 
+  c.output
+end
+
+def solve_it_too(file_name)
+  c = CrateMover9k.new File.read(file_name)
+  c.run!
   c.output
 end
 
@@ -80,3 +94,11 @@ test_output = solve_it './test_input'
 puts test_output
 
 puts solve_it('./input')
+puts
+puts "#### PART 2 ####"
+puts
+
+puts solve_it_too './test_input'
+
+puts solve_it_too './input'
+
