@@ -17,14 +17,13 @@
 
 # How many characters need to be processed before the first start-of-packet marker is detected?
 
-def packet_posish(stream)
+def packet_posish(stream, count: 4)
   pos    = 0
-  count  = 4
   stream = stream.split('')
 
   while piece = stream.slice(pos, count)
     if uniq?(piece)
-      return pos + 4
+      return pos + count
     else
       pos += 1
     end
@@ -57,3 +56,26 @@ end
 input = File.read('./input')
 
 puts "ACTUAL: #{packet_posish(input)}"
+
+tests_2 = {
+  "mjqjpqmgbljsphdztnvjfqwrcgsmlb"    => 19,
+  "bvwbjplbgvbhsrlpgdmjqwftvncz"      => 23,
+  "nppdvjthqldpwncqszvftbrmjlhg"      => 23,
+  "nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg" => 29,
+  "zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw"  => 26
+}
+
+puts
+puts "Running tests..."
+
+tests_2.each do |k,v|
+  output = packet_posish(k, count: 14)
+  if output == v
+    puts "#{k} => #{v} PASS"
+  else
+    puts "#{k} => #{v} FAIL, GOT #{output.inspect}"
+    abort
+  end
+end
+
+puts "ACTUAL PART TWO: #{packet_posish(input, count: 14)}"
