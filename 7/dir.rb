@@ -38,29 +38,6 @@ def unfuck_it(file)
   files
 end
 
-def dir_totals(files)
-  puts
-  puts 'calc'
-  puts
-
-  totals = {}
-
-  files.each do |fpath, size|
-    fpath = fpath.split('/')
-    _fname = fpath.pop
-
-    fpath.each do |dir|
-      fpath.index(dir).times do |i|
-        slice = fpath.slice(0..i+1).join('/')
-        totals[slice] ||= 0
-        totals[slice] += size
-      end
-    end
-  end
-
-  totals
-end
-
 fs = 70000000
 rs = 30000000
 
